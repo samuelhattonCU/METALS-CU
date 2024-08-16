@@ -1,7 +1,25 @@
 function f = plot_col(data,var_name,remove_bads,xdat,ydat)
-    % if ~exist('comp_mult','var')
-    %     comp_mult = 0;
-    % end
+%{
+% plot_col
+% 
+% CU Boulder METALS Project
+% Comments updated: 16 August 2024
+% Samuel Hatton
+% 
+% Inputs are identicle to get_plot_stuff.m inputs, for more information type
+% 'help get_plot_stuff' into the command window.
+% 
+% Outputs
+%     f   The plotted figure object.
+% 
+% Description:
+%     This function is an alternative to 'compare_plot.m'. It creates a
+%     single plot of whatever target variable is input to 'var_name'.
+%     It is deprecated, in that it hasn't been updated in a long time, so
+%     plots will not match those currently output by compare_plot (8/16/24).
+%}
+    
+    % Check overload variables:
     if ~exist('ydat','var')
         ydat = 'Yp';
     end
@@ -14,8 +32,10 @@ function f = plot_col(data,var_name,remove_bads,xdat,ydat)
         remove_bads = true;
     end
 
+    % extract plot data structs:
     [l,r] = get_plot_stuff(data,var_name,remove_bads,xdat,ydat);
 
+    % create figure, plot data
     f = figure;
     hold on
     contourf(l.xdat,l.ydat,l.cdat,LineWidth=0.2)
@@ -24,7 +44,6 @@ function f = plot_col(data,var_name,remove_bads,xdat,ydat)
     ylabel(cb,var_name,FontSize=16,Rotation=270)
     xlabel(xdat)
     ylabel(ydat)
-    
-    
+     
 end
     

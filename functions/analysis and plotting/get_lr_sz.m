@@ -1,5 +1,30 @@
 function [left_sz, right_sz] = get_lr_sz(data)
-
+% get_lr_sz.m
+% 
+% CU Boulder METALS Project
+% Comments updated: 16 August 2024
+% Samuel Hatton
+% 
+% Inputs
+%     data        A Matlab Table representation of a .csv file containing 
+%                 all the data export from VIC-3D for a single image frame. 
+%                 Must include '.aoi' column.
+% Outputs
+%     left_sz     A 1x2 vector containing the number of [rows, columns]
+%                 that will fit all of the data points in rows of the input
+%                 'data' table that have an '.aoi' value of 3 (left).
+%     right_sz    A 1x2 vector containing the number of [rows, columns]
+%                 that will fit all of the data points in rows of the input
+%                 'data' table that have an '.aoi' value of 4 (right).
+% 
+% Methodology
+%     Utilizes the '.aoi' flag to determine left vs. right data. Uses the
+%     '.x' and '.y' columns to determin bounds on the data, and then assumes
+%     a 5 point step between data points to determine how many rows (x
+%     values) and columns (y values) the output matrix needs to have. This
+%     operation is done for both left and right datasets, and then the size
+%     values are output.
+    
     % Separate out left and right specimen sides
     
     left = data(data.aoi == 3,:);
@@ -55,18 +80,6 @@ function [left_sz, right_sz] = get_lr_sz(data)
     right_sz = [right_xlen,right_ylen];
 
 end
-
-% lminx = min(left.x);lmaxx = max(left.x); lminy = min(left.y);lmaxy=max(left.y);
-% xlen = lmaxx-lminx;
-% xlen = lmaxx-lminx + 1;
-% ylen = lmaxy-lminy + 1;
-% right = data(data.aoi == 4,:);
-% ystep = unique(diff(left.y)); ystep = ystep(2);
-% yvec = lminy:ystep:lmaxy;
-% xstep = 5; xvec = lminx:xstep:lmaxx;
-% xlen = length(xvec); ylen = length(yvec); count = ylen * xlen; count == length(left.x);
-% maube = reshape(left.x,[xlen,ylen])';
-% maubey = reshape(left.y,[xlen,ylen])';
 
 
 

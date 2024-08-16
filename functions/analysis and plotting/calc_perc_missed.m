@@ -2,7 +2,7 @@ function [perc_er,perc_pts_ignored,perc_pts_hole,perc_additional_er] = calc_perc
 % calc_perc_missed.m
 %
 % CU Boulder METALS Project
-% 7 August 2024
+% Comments updated: 16 August 2024
 % Samuel Hatton
 % 
 % 
@@ -59,8 +59,11 @@ function [perc_er,perc_pts_ignored,perc_pts_hole,perc_additional_er] = calc_perc
         list_length(i) = length(lcc.PixelIdxList{i});
     end
     
+    % sort by length to get the large cutout holes:
     [~,sort_idx] = sort(list_length); % smallest to largest
     hole_idx = lcc.PixelIdxList(sort_idx(end-3:end)); % the 4 largest
+
+    % Mark the cutout holes with a -3
     for b = 1:length(hole_idx)
         % [i_clust,j_clust] = ind2sub(size(lholesMat),hole_idx{b});
         % lholesMat(i_clust,j_clust) = -3; % negative 3 indicates a cutout, not a missing point
@@ -70,6 +73,8 @@ function [perc_er,perc_pts_ignored,perc_pts_hole,perc_additional_er] = calc_perc
         % scatter(j_clust,i_clust,10,'k','.')
     end
     
+    % repeat the above steps for the "missing" points rather than the
+    % cutouts:
     lmissingMat = zeros(size(lmat_bi));
     missing_idx = lcc.PixelIdxList(sort_idx(1:end-4)); % all but the largest 4
     
@@ -78,12 +83,16 @@ function [perc_er,perc_pts_ignored,perc_pts_hole,perc_additional_er] = calc_perc
         lmissingMat(missing_idx{b}) = -2; % negative 2 indicates a place that is not a cutout that was never included in a correlation, ei, there are not enough speckles, or something.
     end
     
+    % combine the three matrices, each containing zeros and flags
+    % identifying a type of dropped point, into one matrix identifying all
+    % 3 types of dropped point:
     ogmat = lholesMat + lmissingMat + newErMat;
     u = unique(ogmat);
     if any(u == -5) || any(u == -4) % wouldn't catch is a -2 and -1 summed to -3
         error("Points added on top of eachother")
     end
     
+    % count the number of each type of missing point:
     logsz = size(ogmat);
     lnpoints = logsz(1) * logsz(2);
     lnHolePts = nnz(lholesMat);
@@ -95,7 +104,7 @@ function [perc_er,perc_pts_ignored,perc_pts_hole,perc_additional_er] = calc_perc
     % perc_pts_ignored = 100 * lnogEr/nNonHolePts; % percent of non-hole points dropped from the start
     % perc_additional_er = 100 * lnNewEr/ (nNonHolePts - lnogEr); % percent of originally used points dropped in current frame
     
-    %% right
+    %% right (repeated from above, some comments not included below)
     
     % Set all good data points to be zero
     rmat_tri = rmat;
@@ -147,14 +156,16 @@ function [perc_er,perc_pts_ignored,perc_pts_hole,perc_additional_er] = calc_perc
     rnHolePts = nnz(lholesMat);
     rnogEr = nnz(lmissingMat);
     rnNewEr = nnz(newErMat);
+
+    % Compute stats on missing points across both left and right sides of
+    % the frame:
+    ogsz = logsz + rogsz; % total number of missed points
+    npoints = lnpoints + rnpoints; % total number of points possible
+    nHolePts = rnHolePts + lnHolePts; % number of points corresponding to a cutout
+    nogEr = lnogEr + rnogEr; % number of points corresponding to originally missing points
+    nNewEr = lnNewEr + rnNewEr; % number of newly dropped points in this frame
     
-    ogsz = logsz + rogsz;
-    npoints = lnpoints + rnpoints;
-    nHolePts = rnHolePts + lnHolePts;
-    nogEr = lnogEr + rnogEr;
-    nNewEr = lnNewEr + rnNewEr;
-    
-    
+    % Compute percentages to be output:
     perc_pts_hole = (100 * nHolePts/npoints);
     nNonHolePts = npoints - nHolePts;
     perc_pts_ignored = 100 * nogEr/nNonHolePts; % percent of non-hole points dropped from the start
