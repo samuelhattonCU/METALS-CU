@@ -1,4 +1,4 @@
-function [left_mat,right_mat] = col_to_mat(data,var_name)
+function [left_mat,right_mat] = col_to_mat(data,var_name,single)
 % col_to_mat.m
 %
 % CU Boulder METALS Project
@@ -15,6 +15,9 @@ function [left_mat,right_mat] = col_to_mat(data,var_name)
 %                   matrices and output. The name must match exactly one of
 %                   the 'VariableNames' associated with the input 'data'
 %                   table.
+%     single        OPTIONAL: indicates that there are not left and right.
+%                   just a single column to be output as a single matrix.
+%                   will be output in the "left_mat" variable.
 % Outputs
 %     left_mat      A double type matrix containing the data in the
 %                   'var_name' column of the 'data' table, transformed into
@@ -37,6 +40,10 @@ function [left_mat,right_mat] = col_to_mat(data,var_name)
 % Depencies
 %   get_lr_sz.m     uses data.x and data.y to determin the appropriate
 %                   sizes of the transformed matrices.
+    %
+    if ~exist("single","var")
+        single = false;
+    end
 
     % Check input for correctness:
     if ~isa(var_name,'char')
@@ -62,24 +69,36 @@ function [left_mat,right_mat] = col_to_mat(data,var_name)
         error("Target variable/column name not found in data table. Check that the input target variable exists in the input data table.")
     end
     
-    % extract the target data according to area of interest (left & right)
-    left_col = table2array(data(data.aoi == 3,targ_col));
-    right_col = table2array(data(data.aoi == 4,targ_col));
+    if ~single
+        % extract the target data according to area of interest (left & right)
+        left_col = table2array(data(data.aoi == 3,targ_col));
+        right_col = table2array(data(data.aoi == 4,targ_col));
+        
+        % get transformed matrix target sizes
+        [left_sz, right_sz] = get_lr_sz(data);
+        
+        % double check that the number of points is identical in the matrix and
+        % column representations of each dataset:
+        if left_sz(1) * left_sz(2) ~= length(left_col)
+            error("problem w/ left side sizing, check right as well")
+        end
+        if right_sz(1) * right_sz(2) ~= length(right_col)
+            error("problem w/ right side sizing, but probably not the left side.")
+        end
     
-    % get transformed matrix target sizes
-    [left_sz, right_sz] = get_lr_sz(data);
-    
-    % double check that the number of points is identical in the matrix and
-    % column representations of each dataset:
-    if left_sz(1) * left_sz(2) ~= length(left_col)
-        error("problem w/ left side sizing, check right as well")
+        % reshape the columns into matrices
+        left_mat = reshape(left_col,left_sz);
+        right_mat = reshape(right_col,right_sz);
+    else
+        [sz,xvec,yvec] = get_sz(data);
+        mat = NaN(sz(2),sz(1));
+        targ_dat = table2array(data(:,targ_col));
+        for i = 1:length(targ_dat)
+            % xidx = find(data.x(i) == xvec);
+            % yidx = find(data.y(i) == yvec);
+            mat(data.x(i) == xvec,data.y(i) == yvec) = targ_dat(i);
+        end
+        left_mat = mat;
+        right_mat = [];
     end
-    if right_sz(1) * right_sz(2) ~= length(right_col)
-        error("problem w/ right side sizing, but probably not the left side.")
-    end
-
-    % reshape the columns into matrices
-    left_mat = reshape(left_col,left_sz);
-    right_mat = reshape(right_col,right_sz);
-
 end
