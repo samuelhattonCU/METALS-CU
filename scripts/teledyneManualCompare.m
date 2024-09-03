@@ -28,30 +28,34 @@ addpath("..\functions\data loading\")
 %% Load in Teledyne Data
 % We want frame #120, the displacement here is the closest to 3.5 mm.
 
-% load force-displacement:
-fdtab = readtable("F:\DATA\METALS\Teledyne\DIC Data\DIC Data\VIC File\A2_RT-ForceDisp.csv","NumHeaderLines",2,"VariableNamesLine", 2);
+% % load force-displacement:
+% fdtab = readtable("F:\DATA\METALS\Teledyne\DIC Data\DIC Data\VIC File\A2_RT-ForceDisp.csv","NumHeaderLines",2,"VariableNamesLine", 2);
+% 
+% % extract data:
+% force = fdtab.Force_N_;
+% displacement = fdtab.x_L_mm_;
+% 
+% % find where displacement stops shifting:
+% start = find(displacement < 0, 1, "last") + 1;
+% 
+% % trim early data:
+% force = force(start:end);
+% displacement = displacement(start:end);
+% 
+% % instantiate struct (for ease of use):
+% tele.force = force;
+% tele.displacement = displacement;
+% 
+% % show image?
+% % im = imread("F:\DATA\METALS\Teledyne\DIC Data\DIC Data\082224-01-0120_0.tif",'tif');
+% % imshow(im)
 
-% extract data:
-force = fdtab.Force_N_;
-displacement = fdtab.x_L_mm_;
+% % Load frame 120 out data:
+% data = readtable("F:\DATA\METALS\Teledyne\DIC Data\DIC Data\VIC File\Exported Data\082224-01-0120_0.csv","NumHeaderLines",1,"VariableNamesLine",1);
 
-% find where displacement stops shifting:
-start = find(displacement < 0, 1, "last") + 1;
+% read in some of my old dat for now:
+data = readtable("F:\DATA\METALS\Sample 5\Specimen 1\Data Export\maybe304-00000120_0.csv","NumHeaderLInes",1,"variableNamesLine",1);
 
-% trim early data:
-force = force(start:end);
-displacement = displacement(start:end);
-
-% instantiate struct (for ease of use):
-tele.force = force;
-tele.displacement = displacement;
-
-% show image?
-% im = imread("F:\DATA\METALS\Teledyne\DIC Data\DIC Data\082224-01-0120_0.tif",'tif');
-% imshow(im)
-
-% Load frame 120 out data:
-data = readtable("F:\DATA\METALS\Teledyne\DIC Data\DIC Data\VIC File\Exported Data\082224-01-0120_0.csv","NumHeaderLines",1,"VariableNamesLine",1);
 
 % [data,perc_additional_er,perc_pts_ignored,cleaned_frame] = frame_cleaner(data)
 

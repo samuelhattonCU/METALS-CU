@@ -9,7 +9,7 @@ min_y = min(data.y);
 max_y = max(data.y);
 
 % akshat used a step size of 7 for this data:
-step = 7;
+% step = 7;
 
 yvec = min_y:step:max_y;
 xvec = min_x:step:max_x;
