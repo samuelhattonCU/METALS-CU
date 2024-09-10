@@ -65,7 +65,7 @@ im2.AlphaData = 0.7;
 title("Before Translation")
 
 subplot(1,2,2)
--
+
 hold on
 im2 = imshow(I2);
 im2.AlphaData = 0.7;
