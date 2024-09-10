@@ -9,7 +9,7 @@ function f = fdplot(data,titleStr,plotTime)
         data        table data type containing the test data, variable 
                     names and units
         titleStr    Optional title string
-        plotTime    T/F should time be plotted or not
+        plotTime    T/F should time be plotted or not. Default FALSE
     
     Outputs:
         f       A figure object 
@@ -18,13 +18,13 @@ function f = fdplot(data,titleStr,plotTime)
 %}
 
 % make plots pretty
-set(groot,'defaultAxesTickLabelInterpreter','latex'); 
-set(groot,'defaulttextinterpreter','latex');
-set(groot,'defaultLegendInterpreter','latex');
-set(groot,'defaultAxesFontSize',14);
-set(groot,'defaultLineLineWidth',1.4);
-set(groot,'defaultAxesBox','on')
-set(groot,'defaultFontSize',14)
+% set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+% set(groot,'defaulttextinterpreter','latex');
+% set(groot,'defaultLegendInterpreter','latex');
+% set(groot,'defaultAxesFontSize',14);
+% set(groot,'defaultLineLineWidth',1.4);
+% set(groot,'defaultAxesBox','on')
+% set(groot,'defaultFontSize',14)
 
 warning('off','MATLAB:handle_graphics:exceptions:SceneNode')
 
