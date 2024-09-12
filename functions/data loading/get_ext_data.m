@@ -14,6 +14,12 @@ function ext_data = get_ext_data
     end
 
     ext_data = readtable(file_list(1,:),'NumHeaderLines',2);
-    ext_data.Properties.VariableNames = ["Index","ΔL/L0","ΔL","L1","L0"];
-    ext_data.Properties.VariableUnits = ["1","1","mm","mm","mm"];
+    sz = size(ext_data);
+    if sz(2) == 5
+        ext_data.Properties.VariableNames = ["Index","ΔL/L0","ΔL","L1","L0"];
+        ext_data.Properties.VariableUnits = ["1","1","mm","mm","mm"];
+    elseif sz(2) ==2
+        ext_data.Properties.VariableNames = ["Index","ΔL"];
+        ext_data.Properties.VariableUnits = ["1","mm"];
+    end
 end

@@ -90,19 +90,9 @@ function [left_mat,right_mat] = col_to_mat(data,var_name,single)
         left_mat = reshape(left_col,left_sz);
         right_mat = reshape(right_col,right_sz);
     else
-        [sz,xvec,yvec] = get_sz(data);
-        disp(sz)
-        mat = NaN(sz(2),sz(1));
-        targ_dat = table2array(data(:,targ_col));
-        for i = 1:length(targ_dat)
-            % xidx = find(data.x(i) == xvec);
-            % yidx = find(data.y(i) == yvec);
-            if targ_dat(i) ~= 0
-                mat(data.x(i) == xvec,data.y(i) == yvec) = targ_dat(i);
-                disp(size(mat))
-                % display(targ_dat(i))
-            end        
-        end
+        sz = get_sz(data,7); % we're using 7 now I guess?
+        col = table2array(data(:,targ_col));
+        mat = reshape(col,sz);
         left_mat = mat;
         right_mat = [];
     end

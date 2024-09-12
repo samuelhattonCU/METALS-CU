@@ -1,8 +1,19 @@
-function midpoint = getHoles(filename)
-    figure
-    imdata = imread(filename);
-    I = rgb2gray(imdata);
+function midpoint = getHoles(filename,data)
+    if ~exist('data','var')
+        dataexist = false;
+    else
+        dataexist = true;
+    end
     
+    f = figure;
+
+    if ~dataexist
+        imdata = imread(filename);
+        I = rgb2gray(imdata);
+    else
+        I = data;
+    end
+
     Itf = I;
     sz = size(Itf);
     for i = 1:sz(1)*sz(2)
@@ -57,5 +68,6 @@ function midpoint = getHoles(filename)
     hold on
     scatter(meds(:,1),meds(:,2),50,'r','filled')
     scatter(midpoint(1),midpoint(2),50,'rx')
-
+    
+    close(f);
 end
