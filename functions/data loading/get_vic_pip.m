@@ -1,4 +1,4 @@
-function vic_pip = get_vic_pip
+readfunction vic_pip = get_vic_pip
     % assumes it's in a "Data Export" directory already
 
     file_list = ls('vic*.csv');

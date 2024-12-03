@@ -113,6 +113,8 @@ function [lstuff,rstuff] = get_plot_stuff(data,var_name,remove_bads,xdat,ydat,si
                 for j = 1:c
                     if sigma(i,j) < 0
                         cdat(i,j) = NaN;
+                        xdat(i,j) = NaN;
+                        ydat(i,j) = NaN;
                     end
                 end
             end
