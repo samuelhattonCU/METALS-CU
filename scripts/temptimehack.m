@@ -19,7 +19,8 @@ addpath('..\functions\data loading\')
 
 %%
 
-dat = readtable("C:\Users\hatto\OneDrive - UCB-O365\Summer 2024\METALS Documents\FLIR Stuff\baseline_tempcurve.csv");
+% dat = readtable("C:\Users\hatto\OneDrive - UCB-O365\Summer 2024\METALS Documents\FLIR Stuff\baseline_tempcurve.csv");
+dat = readtable("C:\Users\Samuel\OneDrive - UCB-O365\Summer 2024\METALS Documents\FLIR Stuff\baseline_tempcurve.csv");
 dat = dat(1:end-1,:);
 dat.reltime = dat.reltime / 60;
 figure

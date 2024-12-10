@@ -18,7 +18,8 @@ addpath('..\functions\data loading\')
 %%
 
 % full_fname = "D:\S20-3 Tiffs\Sample 20-specimen 3-FLIR0-00000050_0.tif";
-full_fname = "C:\Users\hatto\OneDrive - UCB-O365\Summer 2024\METALS Documents\FLIR Stuff\Specimen 20-4-FLIR0-00001317_0.tif";
+% full_fname = "C:\Users\hatto\OneDrive - UCB-O365\Summer 2024\METALS Documents\FLIR Stuff\Specimen 20-4-FLIR0-00001317_0.tif";
+full_fname = "C:\Users\Samuel\OneDrive - UCB-O365\Summer 2024\METALS Documents\FLIR Stuff\Specimen 20-4-FLIR0-00001317_0.tif";
 % norm_fname = "D:\S20-3 Tiffs\Sample 20-specimen 3-FCAL0-00000050_0.tif";
 
 full_data = double(load_tiff(full_fname));
