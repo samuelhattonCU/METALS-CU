@@ -90,7 +90,7 @@ function [left_mat,right_mat] = col_to_mat(data,var_name,single)
         left_mat = reshape(left_col,left_sz);
         right_mat = reshape(right_col,right_sz);
     else
-        sz = get_sz(data,7); % we're using 7 now I guess?
+        sz = get_sz(data,5); % we're using 7 now I guess?
         col = table2array(data(:,targ_col));
         mat = reshape(col,sz);
         left_mat = mat;
