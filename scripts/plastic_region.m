@@ -16,6 +16,31 @@ set(groot,'defaultAxesBox','on')
 ss22 = readtable("..\data\Sample 22.8_1_1.csv","NumHeaderLines",8,"VariableNamesLine", 7);
 al23 = readtable("..\data\Sample 23.1_1_1.csv","NumHeaderLines",8,"VariableNamesLine", 7);
 hs24 = readtable("..\data\Sample 24.1_1_1.csv","NumHeaderLines",8,"VariableNamesLine", 7);
+ss23_3 = readtable("..\data\Sample 23.3.csv","NumHeaderLines",8,"VariableNamesLine", 7);
+
+% Plot 23.3
+
+figure
+subplot(1,2,1)
+plot(ss23_3.Displacement,ss23_3.Force)
+xlabel("Displacement [$$mm$$]")
+ylabel("Force [$$N$$]")
+title("Force vs. Displacement")
+
+grid minor
+grid on
+
+subplot(1,2,2)
+plot(ss23_3.Time,ss23_3.Force)
+xlabel("Time [$$s$$]")
+ylabel("Force [$$N$$]")
+title("Force Over Time")
+
+grid minor
+grid on
+
+sgtitle("AL6061 Elastic Relaxation, $$1^{st}$$ Attempt")
+
 
 % Extract force and displacement data
 force_ss22 = ss22.Force;
