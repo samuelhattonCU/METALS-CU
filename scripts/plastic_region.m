@@ -1,5 +1,17 @@
 % finding plastic regions
 
+%% Housekeeping
+clear; clc; close all;
+
+% make plots pretty
+set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaulttextinterpreter','latex');
+set(groot,'defaultLegendInterpreter','latex');
+set(groot,'defaultAxesFontSize',20);
+set(groot,'defaultLineLineWidth',1.5);
+set(groot,'defaultAxesBox','on')
+
+%%
 
 ss22 = readtable("..\data\Sample 22.8_1_1.csv","NumHeaderLines",8,"VariableNamesLine", 7);
 al23 = readtable("..\data\Sample 23.1_1_1.csv","NumHeaderLines",8,"VariableNamesLine", 7);
@@ -18,11 +30,11 @@ displacement_hs24 = hs24.Displacement;
 % Plot force-displacement curves
 figure;
 hold on;
-plot(displacement_ss22, force_ss22, 'r', 'DisplayName', 'Sample 22.8');
-plot(displacement_al23, force_al23, 'g', 'DisplayName', 'Sample 23.1');
-plot(displacement_hs24, force_hs24, 'b', 'DisplayName', 'Sample 24.1');
-xlabel('Displacement');
-ylabel('Force');
+plot(displacement_ss22, force_ss22, 'r', 'DisplayName', 'Sample 22.8 [SS]');
+plot(displacement_al23, force_al23, 'g', 'DisplayName', 'Sample 23.1 [AL6061]');
+plot(displacement_hs24, force_hs24, 'b', 'DisplayName', 'Sample 24.1 [HS 17-4 SS]');
+xlabel('Displacement [$$mm$$]');
+ylabel('Force [$$kN$$]');
 title('Force-Displacement Curves');
 legend show;
 hold off;
@@ -49,6 +61,10 @@ plot(displacement_al23(1:idx_al23), polyval(polyfit(displacement_al23(1:idx_al23
 plot(displacement_hs24(1:idx_hs24), polyval(polyfit(displacement_hs24(1:idx_hs24), force_hs24(1:idx_hs24), 1), displacement_hs24(1:idx_hs24)), 'b-x', 'DisplayName', 'Elastic Region 24.1');
 legend show;
 hold off;
+
+xticks([0:0.5:18])
+grid minor
+grid on
 
 function elastic_limit = find_elastic_limit(displacement, force)
     % Use first 20% of data for initial linear fit
