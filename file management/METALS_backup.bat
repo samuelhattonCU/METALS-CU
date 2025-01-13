@@ -1,62 +1,60 @@
 @echo off
 
 REM Define source and destination directories
-set "SOURCE_DIR=C:\METALS"
-set "DEST1=D:\METALS"
-set "DEST2=E:\METALS"
+set "SOURCE_DIR=F:\DATA\METALS"
+set "DEST1=H:\DATA\METALS"
+set "DEST2=G:\DATA\METALS"
+
+if not exist "%SOURCE_DIR%" echo Source dir doesn't exist
+if not exist "%DEST1%" echo Dest 1 dir doesn't exist
+if not exist "%DEST2%" echo Dest 2 dir doesn't exist
+
 
 REM Get current date and time for log file name
-for /f "tokens=1-5 delims=/: " %%d in ("%date% %time%") do (
-    set "LOG_DATE=%%d-%%e-%%f_%%g-%%h"
+for /f "tokens=1-7 delims=/: " %%d in ("%date% %time%") do (
+    set "LOG_DATE=%%d-%%e-%%f_%%g-%%h-%%i-%%j"
 )
 
 REM Define log file with date and time
-set "LOG_FILE=C:\path\to\logs\backup_%LOG_DATE%.log"
+set "LOG_FILE=C:\METALS Utilities\METALS LOG\backup logs\backup_%LOG_DATE%.log"
 
-REM Write start time to log file
+REM Write start time to log and screen
+echo.
+echo Backup started at %date% %time%
 echo Backup started at %date% %time% > "%LOG_FILE%"
-
-REM Function to perform sync (called via CALL)
-:sync_directory
-echo Syncing %~1 to %~2... >> "%LOG_FILE%"
-xcopy "%~1" "%~2" /E /I /Y /D >> "%LOG_FILE%" 2>&1
-if errorlevel 1 (
-    echo Error: Failed to copy %~1 to %~2 >> "%LOG_FILE%"
-)
-goto :eof
-
-REM Function to count files and directories
-:count_files
-setlocal enabledelayedexpansion
-set "COUNT=0"
-for /r "%~1" %%f in (*) do (
-    set /a COUNT+=1
-)
-endlocal & set "%~2=%COUNT%"
-goto :eof
+echo.
 
 REM Main backup process
-echo Counting files in source directory... >> "%LOG_FILE%"
-call :count_files "%SOURCE_DIR%" SOURCE_COUNT
-echo Total files to copy: %SOURCE_COUNT% >> "%LOG_FILE%"
+echo Copying %SOURCE_DIR% to first destination (%DEST1%)...
+echo Copying %SOURCE_DIR% to first destination (%DEST1%)... >> "%LOG_FILE%"
+call :syncDirectory "%SOURCE_DIR%" "%DEST1%"
+echo Initial backup completed at %date% %time%
+echo Initial backup completed at %date% %time% >> "%LOG_FILE%"
+echo.
 
-set "CURRENT_COUNT=0"
+echo Copying %DEST1% to second destination (%DEST2%)...
+echo Copying %DEST1% to second destination (%DEST2%)... >> "%LOG_FILE%"
+call :syncDirectory "%DEST1%" "%DEST2%"
+echo Secondary backup completed at %date% %time%
+echo Secondary backup completed at %date% %time% >> "%LOG_FILE%"
+echo.
 
-REM Sync to DEST1
-for /r "%SOURCE_DIR%" %%f in (*) do (
-    set /a CURRENT_COUNT+=1
-    call :sync_directory "%%f" "%DEST1%\%%~pf"
-    <nul set /p =Progress: %CURRENT_COUNT% / %SOURCE_COUNT%`r
-)
-
-REM Sync to DEST2
-set "CURRENT_COUNT=0"
-for /r "%SOURCE_DIR%" %%f in (*) do (
-    set /a CURRENT_COUNT+=1
-    call :sync_directory "%%f" "%DEST2%\%%~pf"
-    <nul set /p =Progress: %CURRENT_COUNT% / %SOURCE_COUNT%`r
-)
-
-echo. >> "%LOG_FILE%"
+echo.
+echo Backup completed at %date% %time%!
 echo Backup completed at %date% %time%! >> "%LOG_FILE%"
+echo.
 pause
+
+goto :eof
+
+REM Function to perform sync (called via CALL)
+
+:syncDirectory
+echo Syncing "%~1" to "%~2"...
+echo Syncing "%~1" to "%~2"... >> "%LOG_FILE%"
+xcopy "%~1" "%~2" /E /I /Y /D >> "%LOG_FILE%" 2>&1
+if errorlevel 1 (
+    echo Error: Failed to copy "%~1" to "%~2"
+    echo Error: Failed to copy "%~1" to "%~2" >> "%LOG_FILE%"
+)
+goto :eof
