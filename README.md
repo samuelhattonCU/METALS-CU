@@ -36,12 +36,15 @@ All functions include detailed headers with:
 ## Directory Structure
 ```
 METALS-CU/
-├── Functions/
-│   ├── Analysis and Plotting/    # Functions for data processing and visualization
-│   └── Data Loading/             # Functions for importing VIC-3D, Instron, and FLIR data
+├── functions/
+│   ├── analysis and plotting/    # Functions for data processing and visualization
+│   └── data loading/             # Functions for importing VIC-3D, Instron, and FLIR data
 │
-├── Scripts/                      # Standalone analysis scripts
+├── scripts/                      # Standalone analysis scripts
 │
-└── Local/                        # Local configuration files (not in repo)
-                                  # Note: Largely deprecated as of Jan. 2025
+├── local/                        # Local configuration files (not in repo)
+│                                 # Note: Largely deprecated as of Jan. 2025
+├── file management/              # Script for managing data file backups on the VIC desktop.
+│
+└── data/                         # Data files for testing and development
 ```
