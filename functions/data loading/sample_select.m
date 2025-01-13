@@ -1,12 +1,33 @@
 function [selpath,spec_list] = sample_select
-    
+    % sample_select.m
+    %
+    % CU Boulder METALS Project
+    % Comments updated: 01/13/2025
+    % Samuel Hatton
+    %
+    %
+    % Inputs
+    %     None          Interactive dialog-based specimen selection
+    % Outputs
+    %     selpath       Selected directory path containing specimen data
+    %     spec_list     List of selected specimen folders to process
+    % Methodology
+    %     1. Checks for previously saved selection
+    %     2. If using previous: loads saved path and specimen list
+    %     3. If new selection:
+    %        - Opens folder selection dialog
+    %        - Shows specimen list for user selection
+    %        - Saves selection for future use
+    % Dependencies
+    %     None
+
     codeLoc = fileparts(which('sample_select.m'));
     idx = strfind(codeLoc,'METALS-CU');
     pth = codeLoc(1:idx+length('METALS-CU'));
     local_loc = pth + "local\";
 
     startLoc = pwd;
-    
+
     addpath(local_loc)
 
     if exist('prev_selection.mat','file')
@@ -14,7 +35,7 @@ function [selpath,spec_list] = sample_select
     else
         answer = "no saved path";
     end
-    
+
     if strcmp(answer,'Previous')
         % load("defaultPath.mat");
         load("prev_selection.mat");
@@ -24,7 +45,7 @@ function [selpath,spec_list] = sample_select
         if strcmp(answer,"Continue")
             selpath = uigetdir;
             cd(selpath);
-            
+
             spec_list = ls("Specimen*");
             [idx,tf] = listdlg("PromptString","Select the desired specimens from the list below.",'ListString',spec_list);
             if ~tf

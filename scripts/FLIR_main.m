@@ -1,3 +1,22 @@
+% FLIR_main.m
+%
+% CU Boulder METALS Project
+% Comments updated: 01/13/2025
+% Samuel Hatton
+%
+%
+% Purpose
+%     Analysis script for FLIR thermal imaging data
+%     Processes .tif files and creates temperature contour plots
+% Usage
+%     Run script to load and visualize FLIR thermal data
+% Methodology
+%     1. Loads FLIR .tif image files
+%     2. Converts raw data to temperature (Celsius)
+%     3. Creates contour plot with temperature colorbar
+% Dependencies
+%     load_tiff       Custom function
+
 % Trying to do stuff with FLIR tiff files
 
 
@@ -5,7 +24,7 @@
 clear; clc; close all;
 
 % make plots pretty
-set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 set(groot,'defaultAxesFontSize',20);

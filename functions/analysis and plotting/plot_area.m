@@ -1,4 +1,23 @@
 function plot_area(d,f)
+    % plot_area.m
+    %
+    % CU Boulder METALS Project
+    % Comments updated: 01/13/2025
+    % Samuel Hatton
+    %
+    %
+    % Inputs
+    %     d             Displacement data vector
+    %     f             Force data vector
+    % Outputs
+    %     None          Creates figure showing area under curve per cycle
+    % Methodology
+    %     1. Identifies peaks in force data
+    %     2. Calculates enclosed area for each cycle using polyarea
+    %     3. Plots area vs cycle number
+    % Dependencies
+    %     findpeaks     MATLAB Signal Processing Toolbox
+    %     polyarea      MATLAB Image Processing Toolbox
 
     % Identify regions:
     [peaks1,locs1] = findpeaks(f); %positive peaks
@@ -8,7 +27,7 @@ function plot_area(d,f)
     peaks = [peaks1;-peaks2]; % combine peaks vectors
     peaks = peaks(order); % sort peaks to match locs
 
-    
+
     n = length(locs); % number of peaks
     l = length(1:2:n);
     area_vec = zeros(l,1);
@@ -20,7 +39,7 @@ function plot_area(d,f)
         % lower_area = trapz(d(lower_curve_range),f(lower_curve_range));
         % upper_curve_range = locs(i+1):locs(i+2);
         % upper_area = trapz(d(upper_curve_range),f(upper_curve_range));
-        % 
+        %
         % cycle_area = upper_area - lower_area;
         % area_vec(c) = cycle_area;
         cycle_area = polyarea(d(range),f(range));

@@ -1,6 +1,26 @@
 function ext_data = get_ext_data
+    % get_ext_data.m
+    %
+    % CU Boulder METALS Project
+    % Comments updated: 01/13/2025
+    % Samuel Hatton
+    %
+    %
+    % Inputs
+    %     None          Function searches current directory for data
+    % Outputs
+    %     ext_data      Table containing extensometer data with Index and
+    %                   displacement measurements (ΔL/L0, ΔL, L1, L0)
+    % Methodology
+    %     1. Searches current directory for '*extensometer.csv' files
+    %     2. Warns if multiple files found or no files found
+    %     3. Loads data from first matching file
+    %     4. Assigns standardized variable names based on data columns
+    % Dependencies
+    %     None
+
     % assumes it's in a 'Data Export' directory already
-    
+
     file_list = ls('*extensometer.csv');
     [l,~] = size(file_list);
     if l > 1

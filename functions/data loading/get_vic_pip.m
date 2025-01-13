@@ -1,4 +1,25 @@
-readfunction vic_pip = get_vic_pip
+function vic_pip = get_vic_pip
+    % get_vic_pip.m
+    %
+    % CU Boulder METALS Project
+    % Comments updated: 01/13/2025
+    % Samuel Hatton
+    %
+    %
+    % Inputs
+    %     None          Function searches current directory for VIC data files
+    % Outputs
+    %     vic_pip      Table containing VIC-3D pip data loaded from CSV file,
+    %                  with calibration images removed
+    % Methodology
+    %     1. Searches current directory for 'vic*.csv' files
+    %     2. Identifies correct file by naming pattern
+    %     3. Loads data with specific header structure
+    %     4. Removes calibration image entries
+    %     5. Returns empty array if no valid files found
+    % Dependencies
+    %     None
+
     % assumes it's in a "Data Export" directory already
 
     file_list = ls('vic*.csv');
@@ -25,9 +46,9 @@ readfunction vic_pip = get_vic_pip
     else
         file_name = file_list(1,:);
     end
-    
+
     % Load data
-    
+
     warning off
     data = readtable(file_name,"NumHeaderLines",1,"VariableNamesLine",1);
     warning on
@@ -45,14 +66,14 @@ readfunction vic_pip = get_vic_pip
         vic_pip = [];
         return
     end
-    
+
     % % try to find if the vic data started and stopped ever, and adjust the
     % % time:
-    % 
+    %
     % buffer = 4;
-    % 
+    %
     % time = vic_pip.Time_0_1(buffer:end);
-    % 
+    %
     % timediff = diff(time);
     % jumpLocs = find(round(timediff,1) > 0.2);
     % if sum(jumpLocs)
@@ -63,7 +84,7 @@ readfunction vic_pip = get_vic_pip
     %     time(jumpLoc:end) = time(jumpLoc:end) - jumpError;
     %     vic_pip.Time_0_1(buffer:end) = time;
     % end
-    
+
 
 
     % find pips!
@@ -75,7 +96,7 @@ readfunction vic_pip = get_vic_pip
         vic_pip = [];
         return
     end
-    
+
     idxs = find(vic_pip.PIP(signal_strt:end) < closed_threshold_volts);
 
         %%% Note this doesn't look for more than the FIRST PIP but it

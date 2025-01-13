@@ -1,4 +1,16 @@
-%creepmain.m
+% creepmain.m
+%
+% CU Boulder METALS Project
+% Comments updated: 01/13/2025
+% Samuel Hatton
+%
+%
+% Purpose
+%     Analysis script for creep and relaxation behavior in mechanical testing
+%     Compares strain changes between end of pull and end of relaxation
+% Usage
+%     Run script to generate plots and analysis of relaxation data
+
 % Trying to come up with some stuff to present on creep/relaxation
 
 % Compare between end of pull and end of relaxation to look for visable
@@ -9,7 +21,7 @@
 clear; clc; close all;
 
 % make plots pretty
-set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 set(groot,'defaultAxesFontSize',12);
@@ -212,11 +224,11 @@ ax4 = gca;
 hold on
 
 % nstd = 2;
-% 
+%
 % z = absdif;
 % zstd = std(std(absdif,'omitnan'),'omitnan');
 % cutoff = nstd * max(zstd);
-% 
+%
 % z(absdif > cutoff) = NaN;
 z = absdif;
 z(abs(absdif) > 0.05) = NaN;
@@ -344,11 +356,11 @@ ax4 = gca;
 hold on
 
 % nstd = 2;
-% 
+%
 % z = absdif;
 % zstd = std(std(absdif,'omitnan'),'omitnan');
 % cutoff = nstd * max(zstd);
-% 
+%
 % z(absdif > cutoff) = NaN;
 z = absdif;
 % z(abs(absdif) > 0.05) = NaN;
@@ -455,9 +467,9 @@ title("Strain Over Time, Upper and Lower Inside Points")
 % y = table2array(ptdat(:,5));
 % idx = ~isnan(y);
 % plot(t(idx),y(idx),'color',c(5,:))
-% 
+%
 % legend("P2",Location="best")
-% 
+%
 % xlabel("Time $$[sec]$$")
 % ylabel("Hencky $$e_1$$")
 % grid on
