@@ -27,17 +27,32 @@ echo.
 REM Main backup process
 echo Copying %SOURCE_DIR% to first destination (%DEST1%)...
 echo Copying %SOURCE_DIR% to first destination (%DEST1%)... >> "%LOG_FILE%"
-call :syncDirectory "%SOURCE_DIR%" "%DEST1%"
-echo Initial backup completed at %date% %time%
-echo Initial backup completed at %date% %time% >> "%LOG_FILE%"
+
+REM call :syncDirectory "%SOURCE_DIR%" "%DEST1%"
+xcopy "%SOURCE_DIR%" "%DEST1%" /d /s /e >> "%LOG_FILE%" 2>&1
+if errorlevel 1 (
+    echo Error: Failed to copy "%SOURCE_DIR%" to "%DEST1%"
+    echo Error: Failed to copy "%SOURCE_DIR%" to "%DEST1%" >> "%LOG_FILE%"
+)
+
+echo Primary backup completed at %date% %time%
+echo Primary backup completed at %date% %time% >> "%LOG_FILE%"
 echo.
 
 echo Copying %DEST1% to second destination (%DEST2%)...
 echo Copying %DEST1% to second destination (%DEST2%)... >> "%LOG_FILE%"
-call :syncDirectory "%DEST1%" "%DEST2%"
+
+REM call :syncDirectory "%DEST1%" "%DEST2%"
+xcopy "%DEST1%" "%DEST2%" /d /s /e >> "%LOG_FILE%" 2>&1
+if errorlevel 1 (
+    echo Error: Failed to copy "%DEST1%" to "%DEST2%"
+    echo Error: Failed to copy "%DEST1%" to "%DEST2%" >> "%LOG_FILE%"
+)
+
 echo Secondary backup completed at %date% %time%
 echo Secondary backup completed at %date% %time% >> "%LOG_FILE%"
 echo.
+echo Backup process logs saved at %LOG_FILE%
 
 echo.
 echo Backup completed at %date% %time%!
@@ -49,12 +64,13 @@ goto :eof
 
 REM Function to perform sync (called via CALL)
 
-:syncDirectory
-echo Syncing "%~1" to "%~2"...
-echo Syncing "%~1" to "%~2"... >> "%LOG_FILE%"
-xcopy "%~1" "%~2" /E /I /Y /D >> "%LOG_FILE%" 2>&1
-if errorlevel 1 (
-    echo Error: Failed to copy "%~1" to "%~2"
-    echo Error: Failed to copy "%~1" to "%~2" >> "%LOG_FILE%"
-)
-goto :eof
+REM :syncDirectory
+REM echo Syncing "%~1" to "%~2"...
+REM echo Syncing "%~1" to "%~2"... >> "%LOG_FILE%"
+REM REM xcopy "%~1" "%~2" /v /d /s /e /i /y >> "%LOG_FILE%" 2>&1
+REM xcopy "%~1" "%~2" /d /s /e
+REM if errorlevel 1 (
+    REM echo Error: Failed to copy "%~1" to "%~2"
+    REM echo Error: Failed to copy "%~1" to "%~2" >> "%LOG_FILE%"
+REM )
+REM goto :eof
