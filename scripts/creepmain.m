@@ -23,7 +23,7 @@ addpath('..\functions\data loading\')
 
 %% FORCE from INSTRON
 
-data = readtable("C:\Users\hatto\OneDrive - UCB-O365\Summer 2024\METALS Documents\Relaxation\Sample 21.8_20241206_095617_1_1.csv", ...
+data = readtable("C:\Users\hatto\OneDrive - UCB-O365\Summer 2024\METALS Documents\Relaxation\instron_sample21_specimen8.csv", ...
     "NumHeaderLines",8,"VariableNamesLine",7,"VariableUnitsLine",8);
 
 data.Force = data.Force - data.Force(1);
@@ -132,10 +132,10 @@ fill(xvec,yvec,'r','FaceAlpha',0.2,'EdgeColor','r')
 
 %% Compare .out frames
 % 4, 1307, 1433, 2449
-data0004 = frame_cleaner(load_frame_data("E:\FLIR Stuff\Sample 21\Specimen 8",4),true); % first frame
-data1307 = frame_cleaner(load_frame_data("E:\FLIR Stuff\Sample 21\Specimen 8",1307),true); % after heating
-data1433 = frame_cleaner(load_frame_data("E:\FLIR Stuff\Sample 21\Specimen 8",1433),true); % end of loading
-data2449 = frame_cleaner(load_frame_data("E:\FLIR Stuff\Sample 21\Specimen 8",2449),true); % end of test
+data0004 = frame_cleaner(load_frame_data("D:\FLIR Stuff\Sample 21\Specimen 8",4),true); % first frame
+data1307 = frame_cleaner(load_frame_data("D:\FLIR Stuff\Sample 21\Specimen 8",1307),true); % after heating
+data1433 = frame_cleaner(load_frame_data("D:\FLIR Stuff\Sample 21\Specimen 8",1433),true); % end of loading
+data2449 = frame_cleaner(load_frame_data("D:\FLIR Stuff\Sample 21\Specimen 8",2449),true); % end of test
 
 %%
 
@@ -238,13 +238,13 @@ sgtitle("Comparing Strain Before and After Relaxation")
 
 %% Points over time
 
-ptdat = get_e1_from_csv("E:\FLIR Stuff\Sample 21\Specimen 8\strain_over_time.csv");
+ptdat = get_e1_from_csv("D:\FLIR Stuff\Sample 21\Specimen 8\strain_over_time.csv");
 ptdat = ptdat(1:end-1,:);
 imid = [4, 5, 6, 330, 331, 338:10:1298, 1306, 1307, 1308:10:1428, 1433, 1434, 1435, 1438:10:2448, 2449]';
 x = ptdat.index;
 
 
-testdat = readtable("E:\FLIR Stuff\Sample 21\Specimen 8\Specimen 21.8.csv",NumHeaderLines=85,VariableNamesLine=1);
+testdat = readtable("D:\FLIR Stuff\Sample 21\Specimen 8\Specimen 21.8.csv",NumHeaderLines=85,VariableNamesLine=1);
 
 idx_vec = zeros(1,length(x));
 for i = 1:length(x)

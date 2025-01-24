@@ -10,16 +10,17 @@ function [selpath,spec_list] = sample_select
     addpath(local_loc)
 
     if exist('prev_selection.mat','file')
-        answer = questdlg("Use previous sample selction or select a new one?", "Folder selection","Previous","New","New");
+        load("prev_selection.mat");
+        answer = questdlg("Use previous sample selction ([" + spec_list + "] from " + selpath + ") or select a new one?", "Folder selection","Previous","New","New");
     else
         answer = "no saved path";
     end
     
-    if strcmp(answer,'Previous')
+    if ~strcmp(answer,'Previous')
         % load("defaultPath.mat");
-        load("prev_selection.mat");
+        % load("prev_selection.mat");
         % codeLoc = cd(selpath);
-    else
+    % else
         answer = questdlg("Please select the 'Sample' folder you wish to process. For example, 'D:\DATA\METALS\Sample 15\'","Path Selection","Continue","Cancel","Continue");
         if strcmp(answer,"Continue")
             selpath = uigetdir;

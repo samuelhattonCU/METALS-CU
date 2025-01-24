@@ -21,5 +21,7 @@ function ext_data = get_ext_data
     elseif sz(2) ==2
         ext_data.Properties.VariableNames = ["Index","ΔL"];
         ext_data.Properties.VariableUnits = ["1","mm"];
+    else
+        error("Extensometer data load failed: input table doesn't have the expected size (nx5 or nx2)")
     end
 end
