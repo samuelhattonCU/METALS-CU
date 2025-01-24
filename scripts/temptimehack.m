@@ -1,10 +1,30 @@
+% temptimehack.m
+%
+% CU Boulder METALS Project
+% Comments updated: 01/13/2025
+% Samuel Hatton
+%
+%
+% Purpose
+%     Analysis script for temperature evolution over time
+%     Processes FLIR thermal data and fits exponential curves
+% Usage
+%     Run script to generate temperature vs time plots
+% Methodology
+%     1. Loads temperature data from CSV file
+%     2. Plots temperature curves for multiple measurement points
+%     3. Fits exponential curves to cooling regions
+%     4. Compares fitted curves with raw data
+% Dependencies
+%     fit            MATLAB Curve Fitting Toolbox
+
 % plot temp over time hacky script
 
 %% Housekeeping
 clear; clc; close all;
 
 % make plots pretty
-set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 set(groot,'defaultAxesFontSize',20);
@@ -33,7 +53,7 @@ ylabel("Temp [$$C$$]")
 
 
 idk = 64750;
-% 
+%
 
 f1 = fit(dat.reltime(idk:end),dat.Rec_0006_seq_Cursor1_C__mean(idk:end),'exp2');
 f2 = fit(dat.reltime(idk:end),dat.Rec_0006_seq_Cursor2_C__mean(idk:end),'exp2');
@@ -64,7 +84,7 @@ xp = [bands fliplr(bands)];
 yp = ([[1;1]*min(ylim); [1;1]*max(ylim)]*ones(1,size(bands,1))).';
 grab = cell(1,3);
 c = [1 0 0; 0 1 1; 0 0 1];
-for k = 1:size(bands,1)                                                             
+for k = 1:size(bands,1)
     grab{k} = patch(xp(k,:), yp(k,:), c(k,:)*0.75, 'FaceAlpha',0.25, 'EdgeColor',c(k,:)*0.75);
 end
 
@@ -79,7 +99,7 @@ hold off
 % figure
 % plot(x, y)
 % hold on
-% xp = [bands fliplr(bands)];                                                         % X-Coordinate Band Definitions 
+% xp = [bands fliplr(bands)];                                                         % X-Coordinate Band Definitions
 % yp = ([[1;1]*min(ylim); [1;1]*max(ylim)]*ones(1,size(bands,1))).';                  % Y-Coordinate Band Definitions
 % for k = 1:size(bands,1)                                                             % Plot Bands
 %     patch(xp(k,:), yp(k,:), [1 1 1]*0.25, 'FaceAlpha',0.5, 'EdgeColor',[1 1 1]*0.25)

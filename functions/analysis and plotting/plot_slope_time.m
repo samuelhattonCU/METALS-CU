@@ -1,4 +1,24 @@
 function plot_slope_time(d,f)
+    % plot_slope_time.m
+    %
+    % CU Boulder METALS Project
+    % Comments updated: 01/13/2025
+    % Samuel Hatton
+    %
+    %
+    % Inputs
+    %     d             Displacement data vector
+    %     f             Force data vector
+    % Outputs
+    %     None          Creates figure showing slope evolution over time/cycles
+    % Methodology
+    %     1. Identifies peaks in force data
+    %     2. Calculates initial slope from first loading region
+    %     3. Finds slopes in subsequent loading cycles
+    %     4. Plots slope vs cycle number
+    % Dependencies
+    %     findpeaks     MATLAB Signal Processing Toolbox
+    %     ischange      MATLAB Signal Processing Toolbox
 
      % Identify regions:
     [peaks1,locs1] = findpeaks(f); %positive peaks
@@ -12,9 +32,9 @@ function plot_slope_time(d,f)
     % the first region:
     f0 = f(1:locs(1));
     d0 = d(1:locs(1));
-    
+
     inrange = d0 < 0.15;
-    
+
     f0 = f0(inrange);
     d0 = d0(inrange);
     p1 = polyfit(d0,f0,1);

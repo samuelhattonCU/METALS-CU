@@ -1,10 +1,30 @@
+% plastic_region.m
+%
+% CU Boulder METALS Project
+% Comments updated: 01/13/2025
+% Samuel Hatton
+%
+%
+% Purpose
+%     Analysis script for plastic deformation characterization
+%     Compares material behavior across different sample types
+% Usage
+%     Run script to analyze and plot force-displacement relationships
+% Methodology
+%     1. Loads test data for SS, AL6061, and HS 17-4 SS samples
+%     2. Creates force vs displacement and force vs time plots
+%     3. Identifies elastic limits using linear regression
+%     4. Plots elastic regions for comparison
+% Dependencies
+%     find_elastic_limit  Custom function
+
 % finding plastic regions
 
 %% Housekeeping
 clear; clc; close all;
 
 % make plots pretty
-set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 set(groot,'defaultAxesFontSize',20);
@@ -16,6 +36,31 @@ set(groot,'defaultAxesBox','on')
 ss22 = readtable("..\data\Sample 22.8_1_1.csv","NumHeaderLines",8,"VariableNamesLine", 7);
 al23 = readtable("..\data\Sample 23.1_1_1.csv","NumHeaderLines",8,"VariableNamesLine", 7);
 hs24 = readtable("..\data\Sample 24.1_1_1.csv","NumHeaderLines",8,"VariableNamesLine", 7);
+ss23_3 = readtable("..\data\Sample 23.3.csv","NumHeaderLines",8,"VariableNamesLine", 7);
+
+% Plot 23.3
+
+figure
+subplot(1,2,1)
+plot(ss23_3.Displacement,ss23_3.Force)
+xlabel("Displacement [$$mm$$]")
+ylabel("Force [$$N$$]")
+title("Force vs. Displacement")
+
+grid minor
+grid on
+
+subplot(1,2,2)
+plot(ss23_3.Time,ss23_3.Force)
+xlabel("Time [$$s$$]")
+ylabel("Force [$$N$$]")
+title("Force Over Time")
+
+grid minor
+grid on
+
+sgtitle("AL6061 Elastic Relaxation, $$1^{st}$$ Attempt")
+
 
 % Extract force and displacement data
 force_ss22 = ss22.Force;
@@ -69,28 +114,28 @@ grid on
 function elastic_limit = find_elastic_limit(displacement, force)
     % Use first 20% of data for initial linear fit
     n_points = round(length(displacement) * 0.2);
-    
+
     % Fit line to initial linear region
     p = polyfit(displacement(1:n_points), force(1:n_points), 1);
     slope = p(1);
     intercept = p(2);
-    
+
     % Create 0.2% offset line
     offset = 0.002 * max(displacement);
     offset_line = @(x) slope*x + (intercept - slope*offset);
-    
+
     % Remove duplicate x values for interpolation
     [unique_disp, ia, ~] = unique(displacement);
     unique_force = force(ia);
-    
+
     % Find intersection with actual curve
     x_interp = linspace(min(unique_disp), max(unique_disp), 1000);
     y_interp = interp1(unique_disp, unique_force, x_interp, 'spline');
-    
+
     % Find where offset line intersects actual curve
     diff = y_interp - offset_line(x_interp);
     cross_idx = find(diff > 0, 1, 'first');
-    
+
     if isempty(cross_idx)
         elastic_limit = displacement(end);
     else

@@ -1,10 +1,32 @@
 function midpoint = getHoles(filename,data)
+    % getHoles.m
+    %
+    % CU Boulder METALS Project
+    % Comments updated: 01/13/2025
+    % Samuel Hatton
+    %
+    %
+    % Inputs
+    %     filename      Path to image file to analyze
+    %     data          (Optional) Pre-loaded image data matrix
+    % Outputs
+    %     midpoint      Array of midpoint coordinates for detected holes
+    % Methodology
+    %     1. Loads and converts image to binary (black/white)
+    %     2. Identifies connected components using 4-connectivity
+    %     3. Sorts holes by size
+    %     4. Visualizes holes using labeled RGB image
+    %     5. Calculates midpoints of detected holes
+    % Dependencies
+    %     MATLAB Image Processing Toolbox
+
+
     if ~exist('data','var')
         dataexist = false;
     else
         dataexist = true;
     end
-    
+
     f = figure;
 
     if ~dataexist
@@ -23,7 +45,7 @@ function midpoint = getHoles(filename,data)
             Itf(i) = 1;
         end
     end
-    
+
     cc4 = bwconncomp(Itf,4);
     % sort by length to get the large cutout holes:
     list_length = zeros(1,cc4.NumObjects);
@@ -31,10 +53,10 @@ function midpoint = getHoles(filename,data)
         list_length(i) = length(cc4.PixelIdxList{i});
     end
     [~,sort_idx] = sort(list_length); % smallest to largest
-    hole_idx = cc4.PixelIdxList(sort_idx); 
-    
+    hole_idx = cc4.PixelIdxList(sort_idx);
+
     imshow(label2rgb(labelmatrix(cc4),@copper,'c','shuffle'))
-    
+
     meds = NaN(cc4.NumObjects,2);
     for i = 1:cc4.NumObjects
         [row,col] = ind2sub(sz,hole_idx{i});
@@ -43,9 +65,9 @@ function midpoint = getHoles(filename,data)
         meds(i,1) = x;
         meds(i,2) = y;
     end
-    
-    
-    
+
+
+
     holes = zeros(5,2);
     temp = meds;
     meds(:,1) = temp(:,2);
@@ -60,7 +82,7 @@ function midpoint = getHoles(filename,data)
         % pt.Label = "(" + holes(i,1) + "," + holes(i,2) + ")";
     end
     meds = meds(locs,:);
-    
+
     % mid = mean(meds);
     midpoint = zeros(1,2);
     midpoint(1) = min(meds(:,1)) + 0.5 * (max(meds(:,1)) - min(meds(:,1)));
@@ -68,6 +90,6 @@ function midpoint = getHoles(filename,data)
     hold on
     scatter(meds(:,1),meds(:,2),50,'r','filled')
     scatter(midpoint(1),midpoint(2),50,'rx')
-    
+
     close(f);
 end

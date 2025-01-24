@@ -1,3 +1,26 @@
+% relaxation_main.m
+%
+% CU Boulder METALS Project
+% Comments updated: 01/13/2025
+% Samuel Hatton
+%
+%
+% Purpose
+%     Analysis script for material relaxation behavior
+%     Compares strain states before and after relaxation period
+% Usage
+%     Run script to generate strain contour plots and statistics
+% Methodology
+%     1. Loads strain data from before and after relaxation
+%     2. Creates contour plots of strain states
+%     3. Calculates absolute differences in strain
+%     4. Identifies and removes statistical outliers
+% Dependencies
+%     load_frame_data  Custom function
+%     frame_cleaner    Custom function
+%     compare_plot     Custom function
+%     get_plot_stuff   Custom function
+
 % Compare between end of pull and end of relaxation to look for visable
 % change in strain do to stress relaxation
 
@@ -6,7 +29,7 @@
 clear; clc; close all;
 
 % make plots pretty
-set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 set(groot,'defaultAxesFontSize',20);
@@ -19,7 +42,7 @@ addpath("..\local\")
 addpath("..\functions\analysis and plotting\")
 addpath('..\functions\data loading\')
 
-%% 
+%%
 
 data140 = frame_cleaner(load_frame_data("C:\Users\hatto\OneDrive - UCB-O365\Summer 2024\METALS Documents\FLIR Stuff",140),true);
 data1317 = frame_cleaner(load_frame_data("C:\Users\hatto\OneDrive - UCB-O365\Summer 2024\METALS Documents\FLIR Stuff",1317),true);
