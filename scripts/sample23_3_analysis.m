@@ -19,68 +19,68 @@ addpath('..\functions\data loading\')
 
 %% Sample 23 Specimen 3
 
-% load('local\S23_3.mat')
-% vic_pip = data{1,1};
-% inst_data = data{1,2};
-% ext_data = data{1,3}; 
-% targ_var = "ΔL/L0";
-% targ_var_name = "Strain";
-% idx_force_strain = sync_data(vic_pip,inst_data,ext_data,false,targ_var,targ_var_name);
-% idx_force_disp = data{1,4};
-% 
-% 
-% figure
-% subplot(1,2,1)
-% plot(idx_force_strain.Time,idx_force_strain.Force)
-% xlabel("Time [$$sec$$]")
-% ylabel("Force [$$N$$]")
-% title("Force over Time")
-% grid on
-% grid minor
-% yline(0)
-% xlim([-40,2000])
-% 
-% subplot(1,2,2)
-% plot(idx_force_strain.Time(idx_force_strain.Time >= 0),idx_force_strain.Strain(idx_force_strain.Time >= 0))
-% ax = gca;
-% ax.YAxis.Exponent = 0;
-% ytickformat('%.3f')
-% xlabel("Time [$$sec$$]")
-% ylabel("Ext. Strain [$$\Delta L/L0$$]")
-% title("Central Extensometer Strain over Time")
-% grid on
-% grid minor
-% yline(0)
-% xlim([-40,2000])
-% 
-% sgtitle("Elastic Relaxation 1 (S23-3)")
-% 
-% 
-% figure
-% subplot(1,2,1)
-% plot(idx_force_strain.Time,idx_force_strain.Force)
-% xlabel("Time [$$sec$$]")
-% ylabel("Force [$$N$$]")
-% xlim([-40,2000])
-% title("Force over Time")
-% grid on
-% grid minor
-% yline(0)
-% 
-% subplot(1,2,2)
-% plot(idx_force_disp.Time(idx_force_disp.Time >= 0),idx_force_disp.Displacement(idx_force_disp.Time >= 0))
-% ax = gca;
-% ax.YAxis.Exponent = 0;
-% ytickformat('%.3f')
-% xlabel("Time [$$sec$$]")
-% ylabel("Displacement [$$mm$$]")
-% xlim([-40,2000])
-% title("Central Extensometer Displacement over Time")
-% grid on
-% grid minor
-% yline(0)
-% 
-% sgtitle("Elastic Relaxation 1 (S23-3)")
+load('local\S23_3.mat')
+vic_pip = data{1,1};
+inst_data = data{1,2};
+ext_data = data{1,3}; 
+targ_var = "ΔL/L0";
+targ_var_name = "Strain";
+idx_force_strain = sync_data(vic_pip,inst_data,ext_data,false,targ_var,targ_var_name);
+idx_force_disp = data{1,4};
+
+
+figure
+subplot(1,2,1)
+plot(idx_force_strain.Time,idx_force_strain.Force)
+xlabel("Time [$$sec$$]")
+ylabel("Force [$$N$$]")
+title("Force over Time")
+grid on
+grid minor
+yline(0)
+xlim([-40,2000])
+
+subplot(1,2,2)
+plot(idx_force_strain.Time(idx_force_strain.Time >= 0),idx_force_strain.Strain(idx_force_strain.Time >= 0))
+ax = gca;
+ax.YAxis.Exponent = 0;
+ytickformat('%.4f')
+xlabel("Time [$$sec$$]")
+ylabel("Ext. Strain [$$\Delta L/L0$$]")
+title("Central Extensometer Strain over Time")
+grid on
+grid minor
+yline(0)
+xlim([-40,2000])
+
+sgtitle("Elastic Relaxation 1 (S23-3)")
+
+
+figure
+subplot(1,2,1)
+plot(idx_force_strain.Time,idx_force_strain.Force)
+xlabel("Time [$$sec$$]")
+ylabel("Force [$$N$$]")
+xlim([-40,2000])
+title("Force over Time")
+grid on
+grid minor
+yline(0)
+
+subplot(1,2,2)
+plot(idx_force_disp.Time(idx_force_disp.Time >= 0),idx_force_disp.Displacement(idx_force_disp.Time >= 0))
+ax = gca;
+ax.YAxis.Exponent = 0;
+ytickformat('%.2f')
+xlabel("Time [$$sec$$]")
+ylabel("Displacement [$$mm$$]")
+xlim([-40,2000])
+title("Central Extensometer Displacement over Time")
+grid on
+grid minor
+yline(0)
+
+sgtitle("Elastic Relaxation 1 (S23-3)")
 
 %% Sampel 21 Specimen 8
 
@@ -286,64 +286,64 @@ sgtitle("Plastic Relaxation (S21-8)")
 %% Sample 23 Specimen 4
 
 
-% load(".\local\S23_4.mat")
-% vic_pip = data{1,1};
-% inst_data = data{1,2};
-% ext_data = data{1,3}; 
-% targ_var = "ΔL/L0";
-% targ_var_name = "Strain";
-% idx_force_strain = sync_data(vic_pip,inst_data,ext_data,false,targ_var,targ_var_name);
-% idx_force_disp = data{1,4};
-% 
-% figure
-% subplot(1,2,1)
-% plot(idx_force_strain.Time,idx_force_strain.Force)
-% xlabel("Time [$$sec$$]")
-% ylabel("Force [$$N$$]")
-% title("Force over Time")
-% grid on
-% grid minor
-% yline(0)
-% xlim([-40,4300])
-% 
-% subplot(1,2,2)
-% plot(idx_force_strain.Time(idx_force_strain.Time >= 0),idx_force_strain.Strain(idx_force_strain.Time >= 0))
-% ax = gca;
-% ax.YAxis.Exponent = 0;
-% ytickformat('%.3f')
-% xlabel("Time [$$sec$$]")
-% ylabel("Ext. Strain [$$\Delta L/L0$$]")
-% title("Central Extensometer Strain over Time")
-% grid on
-% grid minor
-% yline(0)
-% xlim([-40,4300])
-% 
-% sgtitle("Elastic Relaxation 2 (S23-4)")
-% 
-% 
-% figure
-% subplot(1,2,1)
-% plot(idx_force_strain.Time,idx_force_strain.Force)
-% xlabel("Time [$$sec$$]")
-% ylabel("Force [$$N$$]")
-% xlim([-40,4300])
-% title("Force over Time")
-% grid on
-% grid minor
-% yline(0)
-% 
-% subplot(1,2,2)
-% plot(idx_force_disp.Time(idx_force_disp.Time >= 0),idx_force_disp.Displacement(idx_force_disp.Time >= 0))
-% ax = gca;
-% ax.YAxis.Exponent = 0;
-% ytickformat('%.3f')
-% xlabel("Time [$$sec$$]")
-% ylabel("Displacement [$$mm$$]")
-% xlim([-40,4300])
-% title("Central Extensometer Displacement over Time")
-% grid on
-% grid minor
-% yline(0)
-% 
-% sgtitle("Elastic Relaxation 2 (S23-4)")
+load("local\S23_4.mat")
+vic_pip = data{1,1};
+inst_data = data{1,2};
+ext_data = data{1,3}; 
+targ_var = "ΔL/L0";
+targ_var_name = "Strain";
+idx_force_strain = sync_data(vic_pip,inst_data,ext_data,false,targ_var,targ_var_name);
+idx_force_disp = data{1,4};
+
+figure
+subplot(1,2,1)
+plot(idx_force_strain.Time,idx_force_strain.Force)
+xlabel("Time [$$sec$$]")
+ylabel("Force [$$N$$]")
+title("Force over Time")
+grid on
+grid minor
+yline(0)
+xlim([-40,4300])
+
+subplot(1,2,2)
+plot(idx_force_strain.Time(idx_force_strain.Time >= 0),idx_force_strain.Strain(idx_force_strain.Time >= 0))
+ax = gca;
+ax.YAxis.Exponent = 0;
+ytickformat('%.4f')
+xlabel("Time [$$sec$$]")
+ylabel("Ext. Strain [$$\Delta L/L0$$]")
+title("Central Extensometer Strain over Time")
+grid on
+grid minor
+yline(0)
+xlim([-40,4300])
+
+sgtitle("Elastic Relaxation 2 (S23-4)")
+
+
+figure
+subplot(1,2,1)
+plot(idx_force_strain.Time,idx_force_strain.Force)
+xlabel("Time [$$sec$$]")
+ylabel("Force [$$N$$]")
+xlim([-40,4300])
+title("Force over Time")
+grid on
+grid minor
+yline(0)
+
+subplot(1,2,2)
+plot(idx_force_disp.Time(idx_force_disp.Time >= 0),idx_force_disp.Displacement(idx_force_disp.Time >= 0))
+ax = gca;
+ax.YAxis.Exponent = 0;
+ytickformat('%.2f')
+xlabel("Time [$$sec$$]")
+ylabel("Displacement [$$mm$$]")
+xlim([-40,4300])
+title("Central Extensometer Displacement over Time")
+grid on
+grid minor
+yline(0)
+
+sgtitle("Elastic Relaxation 2 (S23-4)")
