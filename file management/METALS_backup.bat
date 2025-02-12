@@ -61,16 +61,3 @@ echo.
 pause
 
 goto :eof
-
-REM Function to perform sync (called via CALL)
-
-REM :syncDirectory
-REM echo Syncing "%~1" to "%~2"...
-REM echo Syncing "%~1" to "%~2"... >> "%LOG_FILE%"
-REM REM xcopy "%~1" "%~2" /v /d /s /e /i /y >> "%LOG_FILE%" 2>&1
-REM xcopy "%~1" "%~2" /d /s /e
-REM if errorlevel 1 (
-    REM echo Error: Failed to copy "%~1" to "%~2"
-    REM echo Error: Failed to copy "%~1" to "%~2" >> "%LOG_FILE%"
-REM )
-REM goto :eof
