@@ -1,0 +1,10 @@
+# tests/data/twoLineNamesUnits.csv
+# Two header lines: first names, second units, comma separated
+Time,Temperature,Pressure,Status
+s,degC,kPa,flag
+0.0,25.1,101.2,0
+0.1,25.3,101.1,0
+0.2,25.4,101.3,1
+0.3,NaN,101.2,0
+0.4,25.5,,0
+0.5,25.6,101.0,0

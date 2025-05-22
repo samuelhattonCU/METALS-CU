@@ -1,0 +1,10 @@
+# tests/data/malformed.csv
+# Uneven rows, missing entries, potentially mixed delimiters if not careful
+# For basic tests, we'll stick to comma delimiter but with structural issues.
+Header1,Header2,Header3
+# Data starts
+1,val1,100
+2,val2,200,extra_col  % This row has an extra column
+3,val3 % This row is short
+4,,400 % Missing middle value
+5,val5,500

@@ -1,0 +1,14 @@
+# tests/data/commented.csv
+# File with comment lines (starting with # or %) before and interspersed with headers
+# This is a test file for commented headers.
+% Experiment Date: 2025-05-22
+# Data acquisition system: SystemX
+Time,Value
+s,mV
+# Another comment line
+% Just before data starts
+0,1.0
+1,1.1
+2,1.2
+3,1.3
+4,1.4

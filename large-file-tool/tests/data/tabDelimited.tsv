@@ -1,0 +1,6 @@
+# tests/data/tabDelimited.tsv
+# Tab-separated values with a header
+Name	Age	City
+Alice	30	New York
+Bob	24	Los Angeles
+Charlie	35	Chicago
