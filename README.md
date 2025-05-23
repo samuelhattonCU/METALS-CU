@@ -5,7 +5,7 @@
 [METALS: Multiobjective Engineering and Testing of Alloy Structures](https://www.darpa.mil/research/programs/multiobjective-engineering-and-testing-of-alloy-structures)
 
 ### Repository Contributers
-- [Samuel Hatton](https://github.com/samuelhattonCU), BAM Research Assistant
+- [Samuel Hatton](https://github.com/samuelhattonCU), Research Assistant
 
 ### Acknowledgements
 All of this work is lead by [David Marshall](https://www.colorado.edu/aerospace/david-marshall) and [Francisco López Jiménez](https://www.colorado.edu/aerospace/francisco-lopez-jimenez). Thanks to [Ankita Gupta](https://www.linkedin.com/in/ankita-gupta-362a713a) for her work on the project; and to our colaborators at Teledyne, [Sergio Lucato](https://www.linkedin.com/in/lucato) for his leadership and [Akshat Agha](https://www.linkedin.com/in/akshatagha) for his patience and support. Thanks to [Spencer Dansereau](https://www.linkedin.com/in/spencer-dansereau) for helping a ton with trouble shooting nearly all of our test procedures and analysis code.
