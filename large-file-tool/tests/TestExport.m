@@ -63,12 +63,12 @@ classdef TestExport < matlab.unittest.TestCase
             else
                 testCase.PrefsBackup = struct();
             end
+            % Set known defaults for DataImport preferences that might affect export indirectly
+            % (though exportData doesn't directly use many of these)
             setpref('DataImport', 'NumHeaderLines', 0);
             setpref('DataImport', 'Delimiter', ',');
 
             % Clean specific files from ExportTempDir before each test method
-            % This ensures tests don't interfere via leftover files if TestClassTeardown failed
-            % or if running individual test methods.
             files = dir(fullfile(testCase.ExportTempDir, '*.*'));
             for k = 1:length(files)
                 if ~files(k).isdir
@@ -78,19 +78,20 @@ classdef TestExport < matlab.unittest.TestCase
         end
 
         function TeardownMethodVerifyNoOpenFiles(testCase)
-            testCase.verifyEmpty(fopen('all'), 'Some files were left open after the test.');
+             openFiles = fopen('all'); % Get all open file IDs
+            testCase.verifyEmpty(openFiles, 'Some files were left open after the test.');
         end
     end
 
     methods (TestMethodTeardown)
         function restorePrefs(testCase)
             if ~isempty(fieldnames(testCase.PrefsBackup))
-                currentGroupPrefs = fieldnames(testCase.PrefsBackup);
-                for i = 1:length(currentGroupPrefs)
-                    setpref('DataImport', currentGroupPrefs{i}, testCase.PrefsBackup.(currentGroupPrefs{i}));
+                prefNames = fieldnames(testCase.PrefsBackup);
+                for i = 1:length(prefNames)
+                    setpref('DataImport', prefNames{i}, testCase.PrefsBackup.(prefNames{i}));
                 end
             else
-                if ispref('DataImport')
+                 if ispref('DataImport')
                     rmpref('DataImport');
                 end
             end
@@ -109,10 +110,6 @@ classdef TestExport < matlab.unittest.TestCase
             % Read back and compare
             try
                 readTbl = readtable(outputFile);
-                % readtable might infer types differently, e.g. categorical might become cellstr
-                % For robust comparison, convert categorical to string in original if needed
-                % or handle type differences in comparison.
-
                 % Compare column names (readtable might make them valid MATLAB names)
                 testCase.verifyTrue(isequal(lower(readTbl.Properties.VariableNames), lower(testCase.SampleTable.Properties.VariableNames)), ...
                     'CSV column names mismatch after readback.');
@@ -122,7 +119,6 @@ classdef TestExport < matlab.unittest.TestCase
                 testCase.verifyEqual(readTbl.Temperature, testCase.SampleTable.Temperature, 'AbsTol', 1e-9, 'CSV Temperature data mismatch.');
                 testCase.verifyEqual(readTbl.Pressure, testCase.SampleTable.Pressure, 'AbsTol', 1e-9, 'CSV Pressure data mismatch.');
 
-                % Categorical data is often read as cellstr or string by readtable
                 if iscategorical(testCase.SampleTable.Status)
                     testCase.verifyTrue(iscellstr(readTbl.Status) || isstring(readTbl.Status), 'CSV Status column type mismatch.');
                     testCase.verifyEqual(string(readTbl.Status), string(testCase.SampleTable.Status), 'CSV Status data mismatch.');
@@ -131,7 +127,8 @@ classdef TestExport < matlab.unittest.TestCase
                 end
 
             catch ME
-                testCase. azioniFail(['Error reading or comparing exported CSV: ' ME.message]);
+                % Corrected typo from azioniFail to fail
+                testCase.fail(['Error reading or comparing exported CSV: ' ME.message]);
             end
         end
 
@@ -142,11 +139,10 @@ classdef TestExport < matlab.unittest.TestCase
             outputFile = [baseFilename '.mat'];
             testCase.verifyTrue(isfile(outputFile), 'MAT file was not created.');
 
-            % Load back and compare
             loadedData = load(outputFile);
-            % exportData saves the table with a variable name derived from baseFilename
-            [~, expectedVarName, ~] = fileparts(baseFilename);
-            expectedVarName = matlab.lang.makeValidName(expectedVarName);
+            [~, expectedVarNameFromFile, ~] = fileparts(baseFilename); % Name used for saving
+            expectedVarName = matlab.lang.makeValidName(expectedVarNameFromFile);
+
 
             testCase.verifyTrue(isfield(loadedData, expectedVarName), ['MAT file does not contain variable ' expectedVarName]);
             readTbl = loadedData.(expectedVarName);
@@ -160,10 +156,9 @@ classdef TestExport < matlab.unittest.TestCase
             end
 
             baseFilename = fullfile(testCase.ExportTempDir, 'testOutputParquet');
-            % Parquet does not support categorical directly, convert to string
             tblToExport = testCase.SampleTable;
             if iscategorical(tblToExport.Status)
-                tblToExport.Status = string(tblToExport.Status);
+                tblToExport.Status = string(tblToExport.Status); % Parquet prefers string over categorical
             end
 
             exportData(tblToExport, baseFilename, 'Format', 'parquet');
@@ -171,27 +166,27 @@ classdef TestExport < matlab.unittest.TestCase
             outputFile = [baseFilename '.parquet'];
             testCase.verifyTrue(isfile(outputFile), 'Parquet file was not created.');
 
-            % Read back and compare
             try
                 readTbl = parquetread(outputFile);
-                % Parquet might handle some types differently (e.g. datetime, string arrays)
-                % Compare carefully
                 testCase.verifyEqual(readTbl, tblToExport, 'Parquet file content mismatch.');
             catch ME
-                testCase. azioniFail(['Error reading or comparing exported Parquet: ' ME.message]);
+                % Corrected typo from azioniFail to fail
+                testCase.fail(['Error reading or comparing exported Parquet: ' ME.message]);
             end
         end
 
         function testExportSelectedVariablesCsv(testCase)
             baseFilename = fullfile(testCase.ExportTempDir, 'testOutputCsvSelected');
-            selectedVars = {'Time', 'Status'};
+            selectedVars = {'Time', 'Status'}; % This is a 1x2 cell array
             exportData(testCase.SampleTable, baseFilename, 'Format', 'csv', 'SelectedVariables', selectedVars);
 
             outputFile = [baseFilename '.csv'];
             testCase.verifyTrue(isfile(outputFile), 'CSV file (selected vars) was not created.');
 
             readTbl = readtable(outputFile);
-            testCase.verifyEqual(lower(readTbl.Properties.VariableNames), lower(selectedVars'), 'CSV selected variable names mismatch.');
+            % readTbl.Properties.VariableNames is also a 1xN cell array (row vector)
+            % Corrected: compare selectedVars (1x2) with readTbl.Properties.VariableNames (1x2)
+            testCase.verifyEqual(lower(readTbl.Properties.VariableNames), lower(selectedVars), 'CSV selected variable names mismatch.');
             testCase.verifyEqual(readTbl.Time, testCase.SampleTable.Time, 'AbsTol', 1e-9);
             if iscategorical(testCase.SampleTable.Status)
                  testCase.verifyEqual(string(readTbl.Status), string(testCase.SampleTable.Status));
@@ -201,7 +196,6 @@ classdef TestExport < matlab.unittest.TestCase
         end
 
         function testExportTallArray(testCase)
-            % exportData should gather tall arrays before exporting
             baseFilename = fullfile(testCase.ExportTempDir, 'testOutputTallCsv');
             tallSample = tall(testCase.SampleTable);
 
@@ -210,7 +204,6 @@ classdef TestExport < matlab.unittest.TestCase
             testCase.verifyTrue(isfile(outputFile), 'CSV file from tall array was not created.');
 
             readTbl = readtable(outputFile);
-            % Compare with original SampleTable (as tallSample was derived from it)
             testCase.verifyEqual(readTbl.Time, testCase.SampleTable.Time, 'AbsTol', 1e-9);
              if iscategorical(testCase.SampleTable.Status)
                  testCase.verifyEqual(string(readTbl.Status), string(testCase.SampleTable.Status));
@@ -221,36 +214,35 @@ classdef TestExport < matlab.unittest.TestCase
 
         function testExportEmptyTable(testCase)
             baseFilename = fullfile(testCase.ExportTempDir, 'testOutputEmpty');
-            emptyTbl = testCase.SampleTable(1:0, :); % Empty table with same variables
+            emptyTbl = testCase.SampleTable(1:0, :);
 
             testCase.assertWarning(@() exportData(emptyTbl, baseFilename, 'Format', 'csv'), 'exportData:EmptyData');
-            % Check that no file is created (or if it is, it's empty or just headers)
-            outputFileCsv = [baseFilename '.csv'];
-            exportData(emptyTbl, baseFilename, 'Format', 'csv'); % Suppress warning for execution
 
-            % Behavior for empty table export can vary. writetable might create a file with only headers.
+            % Execute again to check file creation
+            exportData(emptyTbl, baseFilename, 'Format', 'csv');
+            outputFileCsv = [baseFilename '.csv'];
+
             if isfile(outputFileCsv)
                 info = dir(outputFileCsv);
-                % Allow for a small file if only headers are written
-                testCase.verifyLessThanOrEqual(info.bytes, 200, 'CSV from empty table is unexpectedly large.');
+                testCase.verifyLessThanOrEqual(info.bytes, 200, 'CSV from empty table is unexpectedly large (headers only is OK).');
                 try
                     tblRead = readtable(outputFileCsv);
-                    testCase.verifyTrue(height(tblRead)==0, 'CSV from empty table should have 0 data rows when read back.');
+                    testCase.verifyTrue(height(tblRead)==0, 'CSV from empty table should have 0 data rows.');
                 catch ME_read_empty
                     % If readtable errors on an empty file or header-only file, that's also a possible outcome.
-                    warning('TestExport:ReadEmptyCsv', 'Reading CSV exported from empty table caused: %s', ME_read_empty.message);
+                    warning('TestExport:ReadEmptyCsv', 'Reading CSV exported from empty table caused: %s. This might be acceptable if file only contains headers or is truly empty.', ME_read_empty.message);
                 end
             else
-                % If no file is created, that's also acceptable for "empty data"
-                % The warning 'exportData:EmptyData' already indicates this.
+                % If exportData decides not to write a file for empty data, this is also acceptable.
+                % The warning 'exportData:EmptyData' should have been issued.
             end
 
             outputFileMat = [baseFilename '.mat'];
-            exportData(emptyTbl, baseFilename, 'Format', 'mat'); % Suppress warning for execution
+             exportData(emptyTbl, baseFilename, 'Format', 'mat'); % Suppress warning for execution
             if isfile(outputFileMat)
                  ld = load(outputFileMat);
-                 [~, expectedVarName, ~] = fileparts(baseFilename);
-                 expectedVarName = matlab.lang.makeValidName(expectedVarName);
+                 [~, expectedVarNameFromFile, ~] = fileparts(baseFilename);
+                 expectedVarName = matlab.lang.makeValidName(expectedVarNameFromFile);
                  testCase.verifyTrue(isfield(ld, expectedVarName));
                  testCase.verifyTrue(isempty(ld.(expectedVarName)) || height(ld.(expectedVarName))==0);
             end
