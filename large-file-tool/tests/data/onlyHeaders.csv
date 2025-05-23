@@ -1,4 +1,0 @@
-# tests/data/onlyHeaders.csv
-# A file with only header lines and no data lines
-Name,Unit,Description
-Count,items,Number of items

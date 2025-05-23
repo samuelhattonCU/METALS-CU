@@ -1,9 +1,0 @@
-# tests/data/oneLineNames.csv
-# Single header row of names, comma separated
-ID,Value,Category
-1,100.2,X1
-2,105.9,Y2
-3,98.5,Z3
-4,110.1,X4
-5,NaN,Y5
-6,102.0,
