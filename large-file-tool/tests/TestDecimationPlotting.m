@@ -8,6 +8,7 @@ classdef TestDecimationPlotting < matlab.unittest.TestCase
         TestAssets
         BaseDataTall % A pre-loaded tall array
         BaseDataTable % A pre-loaded table
+        % BaseDataMeta % MODIFIED: Store meta if needed, though not used in current tests
         LargeSignalTable % For more effective decimation testing
     end
 
@@ -30,15 +31,17 @@ classdef TestDecimationPlotting < matlab.unittest.TestCase
             testCase.assertTrue(isfile(testCase.TestAssets.twoLineNamesUnits), 'Test asset twoLineNamesUnits.csv not found.');
 
             try
-                ds = ingestData(testCase.TestAssets.twoLineNamesUnits, 'NumHeaderLines', 2, 'OutputType', 'tall');
+                % MODIFIED: Capture both outputs from ingestData
+                % Store meta if it might be useful, though current tests don't use it directly here.
+                [ds, ~] = ingestData(testCase.TestAssets.twoLineNamesUnits, 'NumHeaderLines', 2, 'OutputType', 'tall');
+                % testCase.BaseDataMeta = meta; % Uncomment if meta is needed
                 testCase.BaseDataTall = ds;
                 testCase.BaseDataTable = gather(ds);
             catch ME
                 error('TestDecimationPlotting:ClassSetupError', 'Failed to load base data for tests: %s', ME.message);
             end
 
-            % Create a larger table for more meaningful decimation tests
-            rng(123); % For reproducibility
+            rng(123);
             numRowsLarge = 2000;
             largeTime = (0:numRowsLarge-1)' * 0.01;
             largeSignal = cumsum(rand(numRowsLarge, 1) - 0.5) + sin(largeTime * 2*pi*0.5);
@@ -60,8 +63,6 @@ classdef TestDecimationPlotting < matlab.unittest.TestCase
 
         function TeardownMethodVerifyNoOpenFilesAndCloseFigs(testCase)
             testCase.verifyEmpty(fopen('all'), 'Some files were left open after the test.');
-            % Close all figures that might have been opened by plotData
-            % Tag figures in tests if more specific closing is needed
             close all force;
         end
     end
@@ -84,9 +85,6 @@ classdef TestDecimationPlotting < matlab.unittest.TestCase
     % --- downsampleData Tests ---
     methods (Test)
         function testDownsampleStrideTall(testCase)
-            % BaseDataTall has 6 rows. Stride by 2. Expected: rows 1, 3, 5. (3 rows)
-            % Original Times: 0.0, 0.1, 0.2, 0.3, 0.4, 0.5
-            % Expected Times: 0.0, 0.2, 0.4
             stride = 2;
             dsDec = downsampleData(testCase.BaseDataTall, 'Stride', stride, 'OutputType', 'tall');
             tbl = gather(dsDec);
@@ -94,13 +92,11 @@ classdef TestDecimationPlotting < matlab.unittest.TestCase
             testCase.verifyClass(tbl, 'table');
             testCase.verifySize(tbl, [3, 4], 'Incorrect table size after stride on tall.');
             testCase.verifyEqual(tbl.Time, [0.0; 0.2; 0.4], 'Time values mismatch after stride.');
-            testCase.verifyEqual(tbl.Temperature(1), 25.1); % Original row 1
-            testCase.verifyEqual(tbl.Temperature(2), 25.4); % Original row 3
+            testCase.verifyEqual(tbl.Temperature(1), 25.1);
+            testCase.verifyEqual(tbl.Temperature(2), 25.4);
         end
 
         function testDownsampleStrideTable(testCase)
-            % BaseDataTable has 6 rows. Stride by 3. Expected: rows 1, 4. (2 rows)
-            % Expected Times: 0.0, 0.3
             stride = 3;
             tblDec = downsampleData(testCase.BaseDataTable, 'Stride', stride, 'OutputType', 'table');
 
@@ -121,15 +117,12 @@ classdef TestDecimationPlotting < matlab.unittest.TestCase
         end
 
         function testDownsampleWithCustomFunction(testCase)
-            % Custom function: select rows where Status is 1
             customFunc = @(T) T(T.Status == 1, :);
 
-            % On BaseDataTable: Status is 1 only for Time = 0.2
             tblDec = downsampleData(testCase.BaseDataTable, 'Func', customFunc, 'OutputType', 'table');
             testCase.verifySize(tblDec, [1, 4]);
             testCase.verifyEqual(tblDec.Time(1), 0.2);
 
-            % On LargeSignalTable (count how many have Status == 1)
             expectedCount = sum(testCase.LargeSignalTable.Status == 1);
             tblDecLarge = downsampleData(testCase.LargeSignalTable, 'Func', customFunc, 'OutputType', 'table');
             testCase.verifySize(tblDecLarge, [expectedCount, width(testCase.LargeSignalTable)]);
@@ -141,7 +134,7 @@ classdef TestDecimationPlotting < matlab.unittest.TestCase
         end
 
         function testDownsampleStrideExceedsRows(testCase)
-            stride = 10; % BaseDataTable has 6 rows
+            stride = 10;
             tblDec = downsampleData(testCase.BaseDataTable, 'Stride', stride, 'OutputType', 'table');
             testCase.verifySize(tblDec, [1,4], 'Stride exceeding rows should return first row.');
             testCase.verifyEqual(tblDec.Time(1), testCase.BaseDataTable.Time(1));
@@ -182,11 +175,10 @@ classdef TestDecimationPlotting < matlab.unittest.TestCase
             lines = findobj(ax, 'Type', 'Line');
             testCase.verifyNumElements(lines, 2, 'Expected two line series for multiple YVars.');
 
-            % Check legend (auto-generated if not provided)
             leg = findobj(fig, 'Type', 'Legend');
             testCase.verifyNumElements(leg, 1, 'Legend not found for multiple YVars.');
             testCase.verifyEqual(length(leg.String), 2, 'Legend does not have correct number of entries.');
-            testCase.verifyEqual(leg.String{1}, 'Temperature'); % Default legend uses YVar names
+            testCase.verifyEqual(leg.String{1}, 'Temperature');
             testCase.verifyEqual(leg.String{2}, 'Pressure');
         end
 
@@ -195,30 +187,27 @@ classdef TestDecimationPlotting < matlab.unittest.TestCase
             customLegend = {'Temp Series', 'Pressure Series'};
             fig = plotData(testCase.BaseDataTable, 'XVar', 'Time', 'YVar', yVars, 'Legend', customLegend);
             leg = findobj(fig, 'Type', 'Legend');
-            testCase.verifyEqual(leg.String, customLegend', 'Custom legend strings incorrect.'); % Legend strings are column vector
+            testCase.verifyEqual(leg.String, customLegend', 'Custom legend strings incorrect.');
         end
 
         function testPlotDataFromTallArray(testCase)
-            % plotData should gather the tall array
             fig = plotData(testCase.BaseDataTall, 'XVar', 'Time', 'YVar', 'Status');
             testCase.verifyClass(fig, 'matlab.ui.Figure');
             ax = findobj(fig, 'Type', 'Axes');
             lines = findobj(ax, 'Type', 'Line');
             testCase.verifyNumElements(lines, 1, 'Plotting from tall array failed.');
-            % Check if data matches gathered data
             expectedYData = testCase.BaseDataTable.Status;
             actualYData = lines.YData;
-            testCase.verifyEqual(actualYData(:), expectedYData(:)); % Ensure column vectors for comparison
+            testCase.verifyEqual(actualYData(:), expectedYData(:));
         end
 
         function testPlotDataEmptyTable(testCase)
             emptyTbl = table();
             testCase.assertWarning(@() plotData(emptyTbl), 'plotData:EmptyData');
-            fig = plotData(emptyTbl); % Suppress warning for execution
+            fig = plotData(emptyTbl);
             testCase.verifyClass(fig, 'matlab.ui.Figure');
-            % Check for a title indicating no data
             ax = findobj(fig, 'Type', 'Axes');
-            if ~isempty(ax) % Axes might not be created if truly nothing to plot
+            if ~isempty(ax)
                  testCase.verifyEqual(ax.Title.String, 'No data to plot', 'Title for empty data incorrect.');
             end
         end
