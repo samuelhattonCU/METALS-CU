@@ -45,20 +45,28 @@ import os
 #     plt.title(f"{y_var} vs {x_var}")
 #     plt.show()
 
-def xy_plot(df, x_var, y_var, units):
+def xy_plot(df, x_var, y_var, units=None):
     if x_var not in df.columns or y_var not in df.columns:
         raise ValueError(f"Columns {x_var} and/or {y_var} not found in DataFrame")
     
     plt.figure(figsize=[10,5])
     plt.plot(df[x_var], df[y_var])
 
-    x_label = f"{x_var} {units.get(x_var, '')}"
-    y_label = f"{y_var} {units.get(y_var, '')}"
+    if units is not None:
+        x_label = f"{x_var} {units.get(x_var, '')}"
+        y_label = f"{y_var} {units.get(y_var, '')}"
+    else:
+        x_label = x_var
+        y_label = y_var
 
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.title(f"{y_var} vs. {x_var}")
     plt.grid(True)
-    plt.tight_layout
-    # plt.show()
-    plt.savefig(f"{y_var}_vs_{x_var}.png")
+    plt.tight_layout()
+    my_path = os.path.dirname(os.path.abspath(__file__))
+    parent_path = os.path.abspath(os.path.join(my_path, os.pardir))
+    figures_dir = os.path.join(parent_path, "local/figures")
+    # print(figures_dir)
+    os.makedirs(figures_dir, exist_ok=True)
+    plt.savefig(f"{figures_dir}/{y_var}_vs_{x_var}.png")

@@ -5,4 +5,5 @@
 *.fig
 .venv/
 /local/
+__pycache__
 
