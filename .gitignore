@@ -1,3 +1,8 @@
 *.asv
 *.mat
-# *.fig
+*.parquet
+*.csv
+*.fig
+.venv/
+/local/
+
